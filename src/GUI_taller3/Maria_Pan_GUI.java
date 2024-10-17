@@ -18,9 +18,9 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     /**
      * Creates new form Maria_Pan_GUI
      */  
-    String url = "jdbc:mysql://127.0.0.1:3306/mariapan";
-            String user="maria_pan";
-            String pass="m4r1a_p4n";
+    String url = "jdbc:mysql://172.24.79.160:3306/mariapan";
+            String user="root";
+            String pass="";
     public Maria_Pan_GUI() {
         initComponents(); 
         String column[]={"Producto","Precio","Cantidad"};
@@ -85,6 +85,23 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        menu.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                menuStateChanged(evt);
+            }
+        });
+        menu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                menuKeyPressed(evt);
+            }
+        });
+
+        ventas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ventasMouseClicked(evt);
+            }
+        });
+
         producto.setText("Producto:");
 
         cantidad.setText("Cantidad");
@@ -122,8 +139,18 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         });
 
         delete.setText("Borrar Artículo");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
 
         facturar.setText("Facturar");
+        facturar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                facturarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ventasLayout = new javax.swing.GroupLayout(ventas);
         ventas.setLayout(ventasLayout);
@@ -179,6 +206,12 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 
         menu.addTab("Ventas", ventas);
 
+        facturas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                facturasMouseClicked(evt);
+            }
+        });
+
         jLabel2.setText("Ventas");
 
         lista_facs.setModel(new javax.swing.AbstractListModel<String>() {
@@ -225,6 +258,12 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 
         menu.addTab("Facturas", facturas);
 
+        inventario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inventarioMouseClicked(evt);
+            }
+        });
+
         tabla_inv.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -253,6 +292,12 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         );
 
         menu.addTab("Inventario", inventario);
+
+        proveedores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                proveedoresMouseClicked(evt);
+            }
+        });
 
         jLabel3.setText("Proveedor:");
 
@@ -317,7 +362,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     private void cantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cantActionPerformed
-
+//**accion del boton**
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         String name = dropdown_producto.getSelectedItem().toString();
         String query="select * from productos;";
@@ -348,6 +393,38 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     private void total_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_total_fieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_total_fieldActionPerformed
+//**Aqui esto es el boton facturar**
+    private void facturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_facturarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_facturarActionPerformed
+//**Aqui esta el boton de borrar**
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_deleteActionPerformed
+//**aqui cuando hago click **
+    private void menuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_menuKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuKeyPressed
+//**aqui cuando cambia **
+    private void menuStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuStateChanged
+//**cuando  clickea sobre ventas**
+    private void ventasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ventasMouseClicked
+//**cuando  clickea sobre facturas**
+    private void facturasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_facturasMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_facturasMouseClicked
+//**cuando  clickea sobre inventario**
+    private void inventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inventarioMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inventarioMouseClicked
+//**cuando  clickea sobre proveedores**
+    private void proveedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proveedoresMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_proveedoresMouseClicked
 
     /**
      * @param args the command line arguments
