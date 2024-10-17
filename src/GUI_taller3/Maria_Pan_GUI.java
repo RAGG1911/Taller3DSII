@@ -3,19 +3,47 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package GUI_taller3;
+
+import java.sql.*;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
+ * 
  * @author raul1
  */
-public class Maria_Pan_GUI extends javax.swing.JFrame {
 
+public class Maria_Pan_GUI extends javax.swing.JFrame {
+    DefaultTableModel modelo = new DefaultTableModel();
     /**
      * Creates new form Maria_Pan_GUI
-     */
+     */  
+    String url = "jdbc:mysql://127.0.0.1:3306/mariapan";
+            String user="maria_pan";
+            String pass="m4r1a_p4n";
     public Maria_Pan_GUI() {
-        initComponents();
-    }
+        initComponents(); 
+        String column[]={"Producto","Precio","Cantidad"};
+        modelo.setColumnIdentifiers(column);
+        tabla_compra.setModel(modelo);
+        try{           
+            Connection con= DriverManager.getConnection(url, user, pass);
+            String query = "SELECT nombre FROM productos;";
+            PreparedStatement ps=con.prepareStatement(query);
+            ResultSet rs= ps.executeQuery(query);
+            while(rs.next()){
+                String nombre = rs.getString(1);
+                dropdown_producto.addItem(nombre);
+            }
+            
+            
+                
+            
+        }catch(Exception e){
+            
+        }
+        
+            }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,7 +57,6 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         menu = new javax.swing.JTabbedPane();
         ventas = new javax.swing.JPanel();
         producto = new javax.swing.JLabel();
-        dropdown_producto = new javax.swing.JComboBox<>();
         cantidad = new javax.swing.JLabel();
         cant = new javax.swing.JTextField();
         add = new javax.swing.JButton();
@@ -39,6 +66,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         total_field = new javax.swing.JTextField();
         delete = new javax.swing.JButton();
         facturar = new javax.swing.JButton();
+        dropdown_producto = new javax.swing.JComboBox<>();
         facturas = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -58,13 +86,6 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         producto.setText("Producto:");
-
-        dropdown_producto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        dropdown_producto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dropdown_productoActionPerformed(evt);
-            }
-        });
 
         cantidad.setText("Cantidad");
 
@@ -112,10 +133,10 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(ventasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ventasLayout.createSequentialGroup()
-                        .addComponent(dropdown_producto, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dropdown_producto, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addComponent(cant, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(cant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
                         .addComponent(add))
                     .addGroup(ventasLayout.createSequentialGroup()
                         .addComponent(producto)
@@ -125,7 +146,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, ventasLayout.createSequentialGroup()
                             .addComponent(jLabel1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(total_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(total_field, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(delete))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -141,9 +162,9 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                     .addComponent(cantidad))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(ventasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dropdown_producto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(add))
+                    .addComponent(add)
+                    .addComponent(dropdown_producto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -153,7 +174,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                     .addComponent(delete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(facturar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         menu.addTab("Ventas", ventas);
@@ -292,17 +313,36 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void dropdown_productoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dropdown_productoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dropdown_productoActionPerformed
-
+    
     private void cantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cantActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        // TODO add your handling code here:
+        String name = dropdown_producto.getSelectedItem().toString();
+        String query="select * from productos;";
+        int cont=0;
+        try {
+            Connection con = DriverManager.getConnection(url, user, pass);
+            Statement ps=con.createStatement();        
+            ResultSet rs = ps.executeQuery(query); 
+            while (rs.next()) {                                     //no tengo idea de que estoy haciendo hermano, necesito dormir
+            int id[]={rs.getInt("id")};
+            String nombre[]={rs.getString("nombre")};
+            float precio[]={rs.getFloat("precio")};
+            int amount[]={rs.getInt("cantidad")};
+            
+            
+            if(name==nombre[cont])
+                modelo.addRow(new Object[]{nombre,precio,cant});
+            }
+        
+        
+
+      } catch (SQLException e) {
+         JOptionPane.showMessageDialog(null, e);
+         System.out.println(e);
+      } 
     }//GEN-LAST:event_addActionPerformed
 
     private void total_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_total_fieldActionPerformed
@@ -335,7 +375,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Maria_Pan_GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

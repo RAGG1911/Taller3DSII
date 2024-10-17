@@ -21,18 +21,17 @@ CREATE TABLE productos(
     FOREIGN KEY (id_proveedor) REFERENCES proveedor(id)
 );
 
-CREATE TABLE facturas(id int not null AUTO_INCREMENT,
+CREATE TABLE facturas(
     nombre char(255) not null,
     precio float not null,
     cantidad int not null,
     id_proveedor int,
     PRIMARY KEY (id),
-    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id)
+    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id),
     id int not null AUTO_INCREMENT,
     fecha_hora TIMESTAMP not null DEFAULT (NOW()),
     sucursal char(255) not null,
-    total float not null,
-    PRIMARY KEY (id)
+    total float not null
 );
 
 CREATE TABLE producto_factura(
@@ -43,6 +42,14 @@ CREATE TABLE producto_factura(
     FOREIGN KEY (id_factura) REFERENCES facturas(id),
     FOREIGN KEY (id_producto) REFERENCES productos(id)
 );
+
+insert into proveedor (nombre, pais)
+values('Hamelin', 'Inglaterra'),('Humpty Dumpty', 'Bolivia'),('Pita Perfection','Grecia');
+
+insert into productos(nombre, precio, cantidad, id_proveedor)
+values('Pan Flauta Hamelin',4.60,25,1), ('Pan de Huevo',3.50,30,2),('Pan Pita',2.85,28,3);
+
+select * from productos;
 
 /*
 QUERYS PARA MI AMIGO RAUL 
