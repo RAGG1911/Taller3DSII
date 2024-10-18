@@ -19,6 +19,8 @@ import java.util.ArrayList;
 public class Maria_Pan_GUI extends javax.swing.JFrame {
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel modeloInventario = new DefaultTableModel();
+    DefaultTableModel modeloProveedor = new DefaultTableModel();
+
      DefaultListModel<String> listModel = new DefaultListModel<>();
      DefaultListModel<String> listModel2 = new DefaultListModel<>();
 
@@ -34,6 +36,10 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     ArrayList<String> nombreProducto = new ArrayList<>();
     ArrayList<Float> precioProducto = new ArrayList<>();
     ArrayList<Integer> cantidadProducto = new ArrayList<>();
+
+    ArrayList<Integer> idProveedor = new ArrayList<>();
+
+
     float total;
     String sucursal="San Mateo";
 
@@ -325,7 +331,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                 {null}
             },
             new String [] {
-                "Productos"
+                "Nombre Producto"
             }
         ));
         jScrollPane7.setViewportView(tabla_prod);
@@ -531,14 +537,14 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             case 1: //tab facturas
             listModel.clear();
             lista_facs.setModel(listModel);
-            lista_facs.setFixedCellWidth(35); 
+            
             try{           
                 Connection con= DriverManager.getConnection(url, user, pass);
                 String query = "SELECT * FROM facturas;";
                 PreparedStatement ps=con.prepareStatement(query);
                 ResultSet rs= ps.executeQuery(query);
                 while(rs.next()){
-                    listModel.addElement(String.format("F %d",rs.getInt("id")));
+                    listModel.addElement(String.format("Factura %d",rs.getInt("id")));
                     
              
                 }
@@ -576,7 +582,14 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                     case 3://tab proveedores
                     listModel2.clear();
                     prov_list.setModel(listModel2);
-                    prov_list.setFixedCellWidth(35); 
+                    String columna[]={"Nombre Producto"};
+       
+                    modeloProveedor.setRowCount(0);
+
+        modeloProveedor.setColumnIdentifiers(columna);
+                    
+        tabla_prod.setModel(modeloProveedor);
+                  
                     try{           
                         Connection con= DriverManager.getConnection(url, user, pass);
                         String query = "SELECT * FROM proveedor;";
@@ -584,7 +597,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                         ResultSet rs= ps.executeQuery(query);
                         while(rs.next()){
                             listModel2.addElement(rs.getString("nombre"));
-                            
+                            idProveedor.add(rs.getInt("id"));
                      
                         }
                         
@@ -626,6 +639,29 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 //**cuando  clickea cambia prov**
     private void prov_listValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_prov_listValueChanged
         // TODO add your handling code here:
+        int indiceSeleccionado = prov_list.getSelectedIndex();
+        String column[]={"Nombre Producto"};
+        modeloProveedor.setColumnIdentifiers(column);
+        modeloProveedor.setRowCount(0);
+        tabla_prod.setModel(modeloProveedor);
+        try{           
+            Connection con= DriverManager.getConnection(url, user, pass);
+            String query = "SELECT * FROM productos where id_proveedor="+idProveedor.get(indiceSeleccionado);
+            PreparedStatement ps=con.prepareStatement(query);
+            ResultSet rs= ps.executeQuery(query);
+            while(rs.next()){
+                modeloProveedor.addRow(new Object[]{rs.getString("nombre")});
+               
+         
+            }
+            
+            
+                
+            
+        }catch(Exception e){
+            
+        }
+
     }//GEN-LAST:event_prov_listValueChanged
 
     /**
