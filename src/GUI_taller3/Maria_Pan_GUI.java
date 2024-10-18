@@ -81,6 +81,9 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         lista_facs = new javax.swing.JList<>();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        total_factura = new javax.swing.JLabel();
+        sucursal_factura = new javax.swing.JLabel();
+        fecha_factura = new javax.swing.JLabel();
         inventario = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabla_inv = new javax.swing.JTable();
@@ -239,10 +242,16 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Sucursal", "Total", "Productos"
+                "Producto", "Cantidad"
             }
         ));
         jScrollPane5.setViewportView(jTable1);
+
+        total_factura.setText("Total:");
+
+        sucursal_factura.setText("Sucursal:");
+
+        fecha_factura.setText("Fecha:");
 
         javax.swing.GroupLayout facturasLayout = new javax.swing.GroupLayout(facturas);
         facturas.setLayout(facturasLayout);
@@ -251,22 +260,36 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             .addGroup(facturasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(facturasLayout.createSequentialGroup()
+                        .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(total_factura)
+                            .addGroup(facturasLayout.createSequentialGroup()
+                                .addComponent(sucursal_factura)
+                                .addGap(93, 93, 93)
+                                .addComponent(fecha_factura)))
+                        .addGap(0, 155, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         facturasLayout.setVerticalGroup(
             facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(facturasLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(jLabel2)
+                .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(sucursal_factura)
+                    .addComponent(fecha_factura))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(total_factura)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         menu.addTab("Facturas", facturas);
@@ -331,7 +354,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                 {null}
             },
             new String [] {
-                "Nombre Producto"
+                "Productos"
             }
         ));
         jScrollPane7.setViewportView(tabla_prod);
@@ -707,6 +730,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> dropdown_producto;
     private javax.swing.JButton facturar;
     private javax.swing.JPanel facturas;
+    private javax.swing.JLabel fecha_factura;
     private javax.swing.JPanel inventario;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -723,9 +747,11 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     private javax.swing.JLabel producto;
     private javax.swing.JList<String> prov_list;
     private javax.swing.JPanel proveedores;
+    private javax.swing.JLabel sucursal_factura;
     private javax.swing.JTable tabla_compra;
     private javax.swing.JTable tabla_inv;
     private javax.swing.JTable tabla_prod;
+    private javax.swing.JLabel total_factura;
     private javax.swing.JTextField total_field;
     private javax.swing.JPanel ventas;
     // End of variables declaration//GEN-END:variables
