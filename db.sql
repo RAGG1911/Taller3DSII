@@ -22,16 +22,11 @@ CREATE TABLE productos(
 );
 
 CREATE TABLE facturas(
-    nombre char(255) not null,
-    precio float not null,
-    cantidad int not null,
-    id_proveedor int,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id),
     id int not null AUTO_INCREMENT,
     fecha_hora TIMESTAMP not null DEFAULT (NOW()),
     sucursal char(255) not null,
-    total float not null
+    total float not null,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE producto_factura(

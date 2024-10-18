@@ -5,8 +5,11 @@
 package GUI_taller3;
 
 import java.sql.*;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 /**
  *
  * 
@@ -15,33 +18,32 @@ import javax.swing.table.DefaultTableModel;
 
 public class Maria_Pan_GUI extends javax.swing.JFrame {
     DefaultTableModel modelo = new DefaultTableModel();
+    DefaultTableModel modeloInventario = new DefaultTableModel();
+     DefaultListModel<String> listModel = new DefaultListModel<>();
+     DefaultListModel<String> listModel2 = new DefaultListModel<>();
+
+
+
+    
     /**
      * Creates new form Maria_Pan_GUI
      */  
-    String url = "jdbc:mysql://172.24.79.160:3306/mariapan";
+    ArrayList<Integer> listaDeCompra = new ArrayList<>();
+    ArrayList<Integer> listaDeCantidad = new ArrayList<>();
+    ArrayList<Integer> idProducto = new ArrayList<>();
+    ArrayList<String> nombreProducto = new ArrayList<>();
+    ArrayList<Float> precioProducto = new ArrayList<>();
+    ArrayList<Integer> cantidadProducto = new ArrayList<>();
+    float total;
+    String sucursal="San Mateo";
+
+
+
+    String url = "jdbc:mysql://localhost:3306/mariapan";
             String user="root";
             String pass="";
     public Maria_Pan_GUI() {
         initComponents(); 
-        String column[]={"Producto","Precio","Cantidad"};
-        modelo.setColumnIdentifiers(column);
-        tabla_compra.setModel(modelo);
-        try{           
-            Connection con= DriverManager.getConnection(url, user, pass);
-            String query = "SELECT nombre FROM productos;";
-            PreparedStatement ps=con.prepareStatement(query);
-            ResultSet rs= ps.executeQuery(query);
-            while(rs.next()){
-                String nombre = rs.getString(1);
-                dropdown_producto.addItem(nombre);
-            }
-            
-            
-                
-            
-        }catch(Exception e){
-            
-        }
         
             }
 
@@ -365,29 +367,36 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 //**accion del boton**
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         String name = dropdown_producto.getSelectedItem().toString();
-        String query="select * from productos;";
-        int cont=0;
+  
         try {
-            Connection con = DriverManager.getConnection(url, user, pass);
-            Statement ps=con.createStatement();        
-            ResultSet rs = ps.executeQuery(query); 
-            while (rs.next()) {                                     //no tengo idea de que estoy haciendo hermano, necesito dormir
-            int id[]={rs.getInt("id")};
-            String nombre[]={rs.getString("nombre")};
-            float precio[]={rs.getFloat("precio")};
-            int amount[]={rs.getInt("cantidad")};
-            
-            
-            if(name==nombre[cont])
-                modelo.addRow(new Object[]{nombre,precio,cant});
-            }
-        
-        
+            int cantidadComprar=Integer.parseInt(cant.getText());
 
-      } catch (SQLException e) {
-         JOptionPane.showMessageDialog(null, e);
-         System.out.println(e);
-      } 
+                    //no tengo idea de que estoy haciendo hermano, necesito dormir
+                int index = nombreProducto.indexOf(name);
+             
+
+                    if (listaDeCompra.contains(idProducto.get(index))) {
+                        JOptionPane.showMessageDialog(ventas, "Ya agrego ese producto a su carrito","Error" , JOptionPane.ERROR_MESSAGE);
+                        
+                    } else {
+                        if (cantidadComprar<=cantidadProducto.get(index)) {
+                            listaDeCompra.add(idProducto.get(index));
+                            listaDeCantidad.add(cantidadComprar);
+                            modelo.addRow(new Object[]{nombreProducto.get(index),String.format("%.2f",precioProducto.get(index)),cantidadComprar,String.format("%.2f",precioProducto.get(index)*cantidadComprar)});
+                            total+=precioProducto.get(index)*cantidadComprar;
+                            total_field.setText(String.format("%.2f", total));
+                            
+                        } else {
+                            JOptionPane.showMessageDialog(ventas, "Esta comprando más de lo que hay en inventario","Error" , JOptionPane.ERROR_MESSAGE);
+                        }
+                
+                    }
+           
+        } catch (Exception e) {
+            // TODO: handle exception
+            JOptionPane.showMessageDialog(ventas, "Introduzca un número","Error" , JOptionPane.ERROR_MESSAGE);
+    
+        }
     }//GEN-LAST:event_addActionPerformed
 
     private void total_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_total_fieldActionPerformed
@@ -396,18 +405,190 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 //**Aqui esto es el boton facturar**
     private void facturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_facturarActionPerformed
         // TODO add your handling code here:
+
+        String query = "INSERT INTO facturas (sucursal, total) VALUES (?, ?)";
+
+        try {
+            // 1. Establecer la conexión
+            Connection conexion = DriverManager.getConnection(url, user, pass);
+
+            // 2. Preparar la sentencia SQL
+            PreparedStatement stmt = conexion.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, sucursal);  // El primer parámetro es el nombre
+            stmt.setFloat(2, total);  // El segundo parámetro es el email
+
+            // 3. Ejecutar la inserción
+            int filasAfectadas = stmt.executeUpdate();
+
+            // Verificar si la inserción fue exitosa
+            if (filasAfectadas > 0) {
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    long idGenerado = generatedKeys.getLong(1);  // Obtener el ID de la primera columna
+                    System.out.println("Inserción realizada correctamente. ID generado: " + idGenerado);
+                }
+                String query2 = "INSERT INTO producto_factura (id_factura, id_producto, cantidad) VALUES (?, ?, ?)";
+                String query3 = "UPDATE productos SET cantidad = ? WHERE id = ?";                
+                for (int i = 0; i < listaDeCompra.size(); i++) {
+                    PreparedStatement stmt2 = conexion.prepareStatement(query2);
+                    PreparedStatement stmt3 = conexion.prepareStatement(query3);
+                    stmt2.setInt(1,  generatedKeys.getInt(1));  
+                    stmt2.setInt(2, listaDeCompra.get(i)); 
+                    stmt2.setInt(3, listaDeCantidad.get(i)); 
+                    stmt3.setInt(1, cantidadProducto.get(idProducto.indexOf((listaDeCompra.get(i))))-listaDeCantidad.get(i)); 
+                    stmt3.setInt(2, listaDeCompra.get(i)); 
+                    stmt2.executeUpdate();
+                    stmt3.executeUpdate();
+                }
+
+            }
+
+            // 4. Cerrar la conexión
+            stmt.close();
+            conexion.close();
+            clean();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("La lista está conformada por: "+ listaDeCompra);
     }//GEN-LAST:event_facturarActionPerformed
 //**Aqui esta el boton de borrar**
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
         // TODO add your handling code here:
+        int seleccionado = tabla_compra.getSelectedRow();
+        total-=(listaDeCantidad.get(seleccionado)*precioProducto.get(idProducto.indexOf((listaDeCompra.get(seleccionado)))));
+        listaDeCantidad.remove(seleccionado);
+        listaDeCompra.remove(seleccionado);
+       modelo.removeRow(seleccionado);
+       total_field.setText(String.format("%.2f", total));
     }//GEN-LAST:event_deleteActionPerformed
 //**aqui cuando hago click **
     private void menuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_menuKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_menuKeyPressed
 //**aqui cuando cambia **
+
+    private  void clean() {
+        listaDeCompra.clear();
+        listaDeCantidad.clear();
+        idProducto.clear();
+        
+        idProducto.clear();
+        nombreProducto.clear();
+        precioProducto.clear();
+        cantidadProducto.clear();
+
+        cant.setText("");
+        total_field.setText("0.00");
+
+        dropdown_producto.removeAllItems();
+
+        String column[]={"Producto","Precio por unidad","Cantidad", "Precio"};
+        modelo.setColumnIdentifiers(column);
+        modelo.setRowCount(0);
+        tabla_compra.setModel(modelo);
+        try{           
+            Connection con= DriverManager.getConnection(url, user, pass);
+            String query = "SELECT * FROM productos;";
+            PreparedStatement ps=con.prepareStatement(query);
+            ResultSet rs= ps.executeQuery(query);
+            while(rs.next()){
+                idProducto.add(rs.getInt("id"));
+                nombreProducto.add(rs.getString("nombre"));
+                precioProducto.add(rs.getFloat("precio"));
+                cantidadProducto.add(rs.getInt("cantidad"));
+                String nombre = rs.getString("nombre");
+                dropdown_producto.addItem(nombre);
+            }
+            
+            
+                
+            
+        }catch(Exception e){
+            
+        }
+        
+    }
     private void menuStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuStateChanged
         // TODO add your handling code here:
+          int selectedIndex = menu.getSelectedIndex();
+        
+          switch (selectedIndex) {
+            case 0: //tab ventas
+            clean();
+                break;
+            case 1: //tab facturas
+            listModel.clear();
+            lista_facs.setModel(listModel);
+            lista_facs.setFixedCellWidth(35); 
+            try{           
+                Connection con= DriverManager.getConnection(url, user, pass);
+                String query = "SELECT * FROM facturas;";
+                PreparedStatement ps=con.prepareStatement(query);
+                ResultSet rs= ps.executeQuery(query);
+                while(rs.next()){
+                    listModel.addElement(String.format("F %d",rs.getInt("id")));
+                    
+             
+                }
+                
+                
+                    
+                
+            }catch(Exception e){
+                
+            }
+                break;
+                case 2://tab inventario
+                String column[]={"Nombre de Producto","Precio por unidad","Cantidad"};
+                modeloInventario.setColumnIdentifiers(column);
+                modeloInventario.setRowCount(0);
+                tabla_inv.setModel(modeloInventario);
+                try{           
+                    Connection con= DriverManager.getConnection(url, user, pass);
+                    String query = "SELECT * FROM productos;";
+                    PreparedStatement ps=con.prepareStatement(query);
+                    ResultSet rs= ps.executeQuery(query);
+                    while(rs.next()){
+                        modeloInventario.addRow(new Object[]{rs.getString("nombre"),String.format("%.2f", rs.getFloat("precio")),rs.getInt("cantidad")});
+                        
+                 
+                    }
+                    
+                    
+                        
+                    
+                }catch(Exception e){
+                    
+                }
+                    break;
+                    case 3://tab proveedores
+                    listModel2.clear();
+                    prov_list.setModel(listModel2);
+                    prov_list.setFixedCellWidth(35); 
+                    try{           
+                        Connection con= DriverManager.getConnection(url, user, pass);
+                        String query = "SELECT * FROM proveedor;";
+                        PreparedStatement ps=con.prepareStatement(query);
+                        ResultSet rs= ps.executeQuery(query);
+                        while(rs.next()){
+                            listModel2.addElement(rs.getString("nombre"));
+                            
+                     
+                        }
+                        
+                        
+                            
+                        
+                    }catch(Exception e){
+                        
+                    }
+                        break;
+            default:
+                break;
+        }
+
     }//GEN-LAST:event_menuStateChanged
 //**cuando  clickea sobre ventas**
     private void ventasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasMouseClicked
@@ -420,10 +601,13 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 //**cuando  clickea sobre inventario**
     private void inventarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inventarioMouseClicked
         // TODO add your handling code here:
+      
+
     }//GEN-LAST:event_inventarioMouseClicked
 //**cuando  clickea sobre proveedores**
     private void proveedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_proveedoresMouseClicked
         // TODO add your handling code here:
+      
     }//GEN-LAST:event_proveedoresMouseClicked
 
     /**
