@@ -20,6 +20,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     DefaultTableModel modelo = new DefaultTableModel();
     DefaultTableModel modeloInventario = new DefaultTableModel();
     DefaultTableModel modeloProveedor = new DefaultTableModel();
+    DefaultTableModel modeloFactura = new DefaultTableModel();
 
      DefaultListModel<String> listModel = new DefaultListModel<>();
      DefaultListModel<String> listModel2 = new DefaultListModel<>();
@@ -38,6 +39,8 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
     ArrayList<Integer> cantidadProducto = new ArrayList<>();
 
     ArrayList<Integer> idProveedor = new ArrayList<>();
+    ArrayList<Integer> idFactura = new ArrayList<>();
+
 
 
     float total;
@@ -46,8 +49,8 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 
 
     String url = "jdbc:mysql://localhost:3306/mariapan";
-            String user="root";
-            String pass="";
+            String user="raul";
+            String pass="contrasena";
     public Maria_Pan_GUI() {
         initComponents(); 
         
@@ -560,7 +563,14 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             case 1: //tab facturas
             listModel.clear();
             lista_facs.setModel(listModel);
-            
+            String column2[]={"Producto","Cantidad"};
+            modeloFactura.setColumnIdentifiers(column2);
+            modeloFactura.setRowCount(0);
+            jTable1.setModel(modeloFactura);
+            total_factura.setText("Total: ");
+            fecha_factura.setText("Fecha: ");
+            sucursal_factura.setText("Fecha: ");
+
             try{           
                 Connection con= DriverManager.getConnection(url, user, pass);
                 String query = "SELECT * FROM facturas;";
@@ -568,7 +578,7 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                 ResultSet rs= ps.executeQuery(query);
                 while(rs.next()){
                     listModel.addElement(String.format("Factura %d",rs.getInt("id")));
-                    
+                    idFactura.add(rs.getInt("id"));
              
                 }
                 
@@ -627,10 +637,11 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
                         
                             
                         
-                    }catch(Exception e){
+                    }catch(SQLException e){
                         
                     }
                         break;
+
             default:
                 break;
         }
@@ -658,6 +669,48 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
 //**cuando  clickea cambia facs**
     private void lista_facsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lista_facsValueChanged
         // TODO add your handling code here:
+        int indiceSeleccionado = lista_facs.getSelectedIndex();
+        String column[]={"Producto","Cantidad"};
+        modeloFactura.setColumnIdentifiers(column);
+        modeloFactura.setRowCount(0);
+        jTable1.setModel(modeloFactura);
+
+        try{           
+            Connection con= DriverManager.getConnection(url, user, pass);
+            String query = "SELECT * FROM facturas where id="+idFactura.get(indiceSeleccionado);
+            String query2 = "SELECT * FROM producto_factura where id_factura="+idFactura.get(indiceSeleccionado);
+
+            PreparedStatement ps=con.prepareStatement(query);
+            ResultSet rs= ps.executeQuery(query);
+            PreparedStatement ps2=con.prepareStatement(query2);
+            ResultSet rs2= ps2.executeQuery(query2);
+            while(rs.next()){
+               sucursal_factura.setText("Sucursal: "+rs.getString("sucursal"));
+               fecha_factura.setText("Fecha: "+rs.getDate("fecha_hora"));
+               total_factura.setText("Total: "+String.format("%.2f", rs.getFloat("total")));
+
+               
+         
+            }
+            while(rs2.next()){
+                int cantidadDeProducto = rs2.getInt("cantidad");
+                int idProductoDeFactura =rs2.getInt("id_producto");
+                String nombreDeProducto="";
+            String query3 = "SELECT * FROM productos where id="+idProductoDeFactura;
+                PreparedStatement ps3=con.prepareStatement(query3);
+                ResultSet rs3= ps3.executeQuery(query3);
+                while(rs3.next()){
+                    nombreDeProducto=rs3.getString("nombre");
+                }
+                modeloFactura.addRow(new Object[]{nombreDeProducto,cantidadDeProducto});
+            }
+            
+            
+                
+            
+        }catch(SQLException e){
+            
+        }
     }//GEN-LAST:event_lista_facsValueChanged
 //**cuando  clickea cambia prov**
     private void prov_listValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_prov_listValueChanged
