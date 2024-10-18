@@ -221,6 +221,11 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
+        lista_facs.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lista_facsValueChanged(evt);
+            }
+        });
         jScrollPane6.setViewportView(lista_facs);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -239,11 +244,11 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(facturasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(facturasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         facturasLayout.setVerticalGroup(
@@ -307,6 +312,11 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        prov_list.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                prov_listValueChanged(evt);
+            }
         });
         jScrollPane4.setViewportView(prov_list);
 
@@ -609,6 +619,14 @@ public class Maria_Pan_GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
       
     }//GEN-LAST:event_proveedoresMouseClicked
+//**cuando  clickea cambia facs**
+    private void lista_facsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lista_facsValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lista_facsValueChanged
+//**cuando  clickea cambia prov**
+    private void prov_listValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_prov_listValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_prov_listValueChanged
 
     /**
      * @param args the command line arguments
